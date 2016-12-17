@@ -91,6 +91,8 @@ The original data containing the following files:
       
 We will use this data to create two tidy data sets, train and test (out of the original data and the PCA data). As mentioned, the training set will contain 70% of the data, and the test set will contain the raimaning 30%.
 
+<a name="Download and Read Data"></a>
+
 ## Download and Read Data
 
 First, let us load the relevent R libraries
@@ -175,6 +177,8 @@ cat("Training data is consists of", dim(X.train)[2], "explanatory variables, and
     "explanatory variables, and", dim(X.test)[1], "observations.")
 ```
 
+<a name="Clean Variables Names"></a>
+
 ## Clean Variables Names
 
 Let us look at the first 6 variable names:
@@ -215,6 +219,8 @@ cat("There are", length(v.names), "variables, and",
 
 All good.
 
+<a name="Set Response Variable"></a>
+
 ## Set Response Variable
 
 Next, we will change the response's (y) levels:
@@ -227,6 +233,8 @@ y.test.vec <- factor(y.test$activity)
 levels(y.train.vec) <- activity.labels$name
 levels(y.test.vec) <- activity.labels$name
 ```
+
+<a name="Test and Train Datasets"></a>
 
 ## Test and Train Datasets
 
@@ -262,6 +270,7 @@ write.csv(train, 'HAR_train.csv', row.names = FALSE)
 write.csv(test, 'HAR_test.csv', row.names = FALSE)
 ```
 
+<a name="Principal Components Analysis"></a>
 
 ## Principal Components Analysis
 
@@ -287,6 +296,8 @@ pca.test$Subject <- test$Subject; pca.test$Activity <- test$Activity
 ```
 
 PCA needed `r trans$numComp` components to capture 95 percent of the variance. Let us plot the first 3 components against the response variable (using the train data).
+
+<a name="Data Visualisation"></a>
 
 # Data Visualisation
 
@@ -367,6 +378,8 @@ legend(x = -4.9, y = 2.1, legend = levels(y.train.vec),
 
 Nice!
 
+<a name="Modeling"></a>
+
 # Modeling
 
 In this section we apply several classification algorithms to our training data, and estimate the models' accuracy on the test set.
@@ -380,6 +393,8 @@ We will apply the following algorithms:
 * GLM 
 
 We will expect k-NN to perform poorly compare to other methods (curse of dimensionality - even with the PCA data), thus, k-NN results will set a benchmark which we hope to outperform.
+
+<a name="k-NN"></a>
 
 ## k-NN
 
@@ -432,6 +447,8 @@ knn.pred.3 <- knn(X.pca.train.mat, X.pca.test.mat, y.train.vec, k = 3)
 The $k=1$ model's estimated accuracy is `r round(mean(knn.pred.1 == y.test.vec) * 100, 2)`%, while the one with $k=3$ gives `r round(mean(knn.pred.3 == y.test.vec) * 100, 2)`%. 
 
 As expected, the one with $k=3$ is more accurate.
+
+<a name="Random Forest"></a>
 
 ## Random Forest
 
@@ -534,6 +551,7 @@ The model's accuracy is `r round(mean(rf.small.pred == y.test.vec) * 100, 2)`%. 
 
 can we get an even better results?
 
+<a name="Generalized Linear Model"></a>
 
 ## Generalized Linear Model
 
@@ -568,9 +586,7 @@ best.lambda <- cv.glm.mod$lambda.min
 ```
 
 
-Minimal CV error is reached using $\lambda=$ `r round(best.lambda, 6)`. We will use this $\lambda$ in order to give prediction on the test set. 
-
-The chosen model using `r cv.glm.mod$glmnet.fit$df[cv.glm.mod$glmnet.fit$lambda == best.lambda]` predictors.
+Minimal CV error is reached using lambda = `r round(best.lambda, 6)`. We will use the corresponding model in order to give prediction on the test set. This model is using `r cv.glm.mod$glmnet.fit$df[cv.glm.mod$glmnet.fit$lambda == best.lambda]` predictors.
 
 
 ```{r}
@@ -579,6 +595,8 @@ glm.pred <- predict(cv.glm.mod, newx = X.test.mat,
 ```
 
 The model gives `r round(mean(glm.pred == y.test.vec) * 100, 2)`% accuracy. Not bad!
+
+<a name="Conclusion"></a>
 
 # Conclusion
 
