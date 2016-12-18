@@ -582,7 +582,7 @@ cv.glm.mod <- cv.glmnet(X.train.mat,
 plot(cv.glm.mod)
 
 best.lambda <- cv.glm.mod$lambda.min
-p <- cv.glm.mod$glmnet.fit$df[cv.glm.mod$glmnet.fit$lambda == best.lambda]
+p <- cv.glm.mod$nzero[cv.glm.mod$glmnet.fit$lambda == best.lambda]
 ```
 
 ```{r}
